@@ -1,59 +1,101 @@
 <script>
-  export default {
-    data() {
-      return {
-        countryMenu: false,
-        inputFocus: false
-      }
-    },
-    methods: {
-      isCountryChanged() {
-        console.log('ok');
+import ButtonContinue from "@/components/ButtonContinue.vue";
+import NavMenu from "@/components/NavMenu.vue";
+import ChangeRegion from "@/components/ChangeRegion.vue";
+export default {
+  components: { ButtonContinue, NavMenu, ChangeRegion },
+  data() {
+    return {
+      countryMenu: false,
+      inputFocus: false,
+      numberRegion: "+7",
+      btnContinue: {
+        link: "/",
+        content: "Continue",
       },
-      isInputFocus(flag) {
-        return this.inputFocus = flag
-      }
+      navMenu: {
+        link: "/",
+      },
+      changeRegion: [
+        {
+          id: 0,
+          number: "+2",
+          icon: "",
+        },
+        {
+          id: 1,
+          number: "+7",
+          icon: "",
+        },
+        {
+          id: 2,
+          number: "+129",
+          icon: "",
+        },
+      ],
+      valueTelInput: "",
+    };
+  },
+  methods: {
+    isCountryChanged(flag) {
+      return (this.countryMenu = flag);
     },
-    mounted() {
-    }
-
-  }
-
-
+    isInputFocus(flag) {
+      return (this.inputFocus = flag);
+    },
+    isRegion(number) {
+      return (this.numberRegion = number);
+    },
+  },
+  mounted() {},
+};
 </script>
 
 <template>
-  <div class="verification-page" @click="isInputFocus(false)">
+  <div
+    class="verification-page"
+    @click="[isInputFocus(false), isCountryChanged(false)]"
+  >
     <div class="container">
-      <nav class="nav">
-        <router-link to="/">
-          <img src="../assets/arrow-left.svg" alt="back" />
-        </router-link>
-      </nav>
+      <nav-menu :navMenu="navMenu"></nav-menu>
 
       <div class="info">
         <h2>Enter Your Phone Number</h2>
         <p>
           Please confirm your country code and enter <br />
           your phone number
+          {{ valueTelInput }}
         </p>
       </div>
 
       <div class="input-phone-number">
-        <div class="country" @click="isCountryChanged">
+        <div class="country" @click.stop="isCountryChanged(true)">
           <img src="../assets/polsha.png" alt="country flag" />
-          <p>+7</p>
+          <p>{{ numberRegion }}</p>
+          <div class="country-change" v-if="countryMenu">
+            <change-region
+              @click.stop="[isRegion(item.number), isCountryChanged(false)]"
+              :item="item"
+              :key="item.id"
+              v-for="item in changeRegion"
+            ></change-region>
+          </div>
         </div>
-        <input type="tel" class="input" @click.stop="isInputFocus(true)" placeholder="Phone Number" />
+        <input
+          type="tel"
+          class="input"
+          @click.stop="isInputFocus(true)"
+          v-model="valueTelInput"
+          placeholder="Phone Number"
+        />
       </div>
     </div>
-
-    <router-link to="/verification" class="button-continue" :class="{active: inputFocus}">Continue</router-link>
+    <button-continue :btnContinue="btnContinue"></button-continue>
+    <!-- <button-continue :btnContinue="btnContinue" :class="{ active: inputFocus }"></button-continue> -->
   </div>
 </template>
 
 <style lang="scss" scoped>
-
 .active {
   transform: translateY(-280px);
 }
@@ -76,7 +118,8 @@
       gap: 8px;
       height: 36px;
       .country,
-      .input {
+      .input,
+      .country-change {
         background-color: #f7f7fc;
       }
       .country {
@@ -86,12 +129,31 @@
         justify-content: center;
         gap: 8px;
         border-radius: 4px;
+        position: relative;
         p {
           color: #adb5bd;
         }
         img {
           width: 18px;
           height: 18px;
+        }
+        .country-change {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          border-radius: 4px;
+          .change-item {
+            box-shadow: 0 0 5px rgb(196, 196, 196);
+            // background-color: red;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 4px;
+          }
         }
       }
       .input {

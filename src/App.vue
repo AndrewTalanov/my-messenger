@@ -1,32 +1,24 @@
-<template>
-  <div class="wrapper" :style="{ height: heightWrapper }">
-    <router-view></router-view>
-  </div>
-
-  <!-- <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-    </nav> -->
-</template>
-
 <script>
 export default {
   data() {
     return {
-      heightWrapper: 100 + "vh",
+      
     };
   },
   methods: {
-    isHeightWrapper() {
-      return (this.heightWrapper =
-        document.documentElement.clientHeight + "px");
-    },
+    
   },
   mounted() {
-    this.isHeightWrapper();
+    this.$store.commit("isHeightViewport");
   },
 };
 </script>
+
+<template>
+  <div class="wrapper" :style="{ height: $store.state.heightViewport }">
+    <router-view></router-view>
+  </div>
+</template>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
@@ -75,15 +67,5 @@ a {
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-}
-.button-continue {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 52px;
-  box-sizing: border-box;
-  width: 100%;
-  background-color: #002de3;
-  border-radius: 30px;
 }
 </style>
